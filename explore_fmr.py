@@ -15,7 +15,7 @@ import numpy as np           # For numerical operations
 import matplotlib.pyplot as plt  # For creating plots and charts
 import seaborn as sns        # For enhanced statistical visualizations
 import requests             # For downloading data from URLs
-from io import StringIO     # For handling string data as file-like objects
+from io import StringIO, BytesIO  # For handling string and binary data as file-like objects
 
 # Set up plotting style for better-looking charts
 plt.style.use('seaborn-v0_8')
@@ -26,7 +26,7 @@ def download_fmr_data(url):
     Download FMR data from HUD website.
     
     Args:
-        url (str): The URL to download the CSV data from
+        url (str): The URL to download the Excel data from
     
     Returns:
         pandas.DataFrame: The downloaded data as a DataFrame
@@ -35,13 +35,13 @@ def download_fmr_data(url):
     print(f"Source: {url}")
     
     try:
-        # Send HTTP request to download the CSV file
+        # Send HTTP request to download the Excel file
         response = requests.get(url)
         response.raise_for_status()  # Raise an exception for bad status codes
         
-        # Convert the downloaded text to a pandas DataFrame
-        # StringIO allows us to treat the text as a file
-        df = pd.read_csv(StringIO(response.text))
+        # Convert the downloaded Excel data to a pandas DataFrame
+        # Use BytesIO to handle binary Excel data
+        df = pd.read_excel(BytesIO(response.content))
         
         print(f"✅ Successfully downloaded {len(df)} records")
         return df
@@ -51,6 +51,9 @@ def download_fmr_data(url):
         return None
     except pd.errors.EmptyDataError:
         print("❌ Error: Downloaded file appears to be empty")
+        return None
+    except Exception as e:
+        print(f"❌ Error reading Excel file: {e}")
         return None
 
 def clean_and_prepare_data(df):
@@ -285,8 +288,8 @@ def main():
     print("🏠 HUD Fair Market Rent Analysis")
     print("=" * 40)
     
-    # URL for HUD FMR data
-    fmr_url = "https://www.huduser.gov/portal/datasets/fmr/fmr2024/FY2024_FMRs.csv"
+    # URL for HUD FMR data (Excel format)
+    fmr_url = "https://www.huduser.gov/portal/datasets/fmr/fmr2024/FY24_FMRs.xlsx"
     
     # Step 1: Download the data
     df = download_fmr_data(fmr_url)
