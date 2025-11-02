@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HUD Fair Market Rent Explorer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card h3 {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .stat-card .value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            align-items: end;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #555;
+        }
+
+        input, select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        button {
+            padding: 8px 16px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #764ba2;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            color: #555;
+            cursor: pointer;
+            user-select: none;
+            white-space: nowrap;
+        }
+
+        th:hover {
+            background: #e9ecef;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #dee2e6;
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .state-badge {
+            display: inline-block;
+            background: #e7f3ff;
+            color: #0066cc;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .type-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .type-badge.metro {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .type-badge.county {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .rent-value {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .info-text {
+            padding: 10px 20px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            padding: 20px;
+            background: white;
+            margin-top: 20px;
+            border-radius: 8px;
+        }
+
+        .pagination button {
+            padding: 6px 12px;
+        }
+
+        .pagination button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .pagination span {
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>HUD Fair Market Rent Explorer</h1>
+            <p>Interactive exploration of Fair Market Rent data across US states and counties</p>
+        </header>
+
+        <div id="stats" class="stats-grid"></div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="stateFilter">Filter by State:</label>
+                <select id="stateFilter">
+                    <option value="">All States</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="typeFilter">Filter by Type:</label>
+                <select id="typeFilter">
+                    <option value="">All Types</option>
+                    <option value="metro">Metro Areas</option>
+                    <option value="county">Counties</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="searchInput">Search by Name:</label>
+                <input type="text" id="searchInput" placeholder="e.g., San Francisco">
+            </div>
+
+            <div class="control-group">
+                <button id="resetBtn">Reset Filters</button>
+            </div>
+        </div>
+
+        <div id="content"></div>
+    </div>
+
+    <script>
+        let allData = [];
+        let filteredData = [];
+        const itemsPerPage = 50;
+        let currentPage = 1;
+
+        // Load data
+        async function loadData() {
+            try {
+                const response = await fetch('fmr_data.json');
+                if (!response.ok) throw new Error('Failed to load data');
+                const data = await response.json();
+                allData = data.areas || [];
+                filteredData = [...allData];
+
+                // Initialize
+                populateStateFilter();
+                displayStats(data.metadata);
+                displayTable();
+            } catch (error) {
+                document.getElementById('content').innerHTML = `
+                    <div class="error">⚠️ Error loading data: ${error.message}<br><br>
+                    Make sure you've run the analysis script first to generate fmr_data.json</div>
+                `;
+            }
+        }
+
+        function displayStats(metadata) {
+            const stats = metadata.statistics.two_bedroom;
+            document.getElementById('stats').innerHTML = `
+                <div class="stat-card">
+                    <h3>Total Areas</h3>
+                    <div class="value">${metadata.total_areas.toLocaleString()}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>2-BR Min Rent</h3>
+                    <div class="value">$${stats.min.toLocaleString()}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>2-BR Max Rent</h3>
+                    <div class="value">$${stats.max.toLocaleString()}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>2-BR Average</h3>
+                    <div class="value">$${stats.average.toLocaleString()}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>2-BR Median</h3>
+                    <div class="value">$${stats.median.toLocaleString()}</div>
+                </div>
+            `;
+        }
+
+        function populateStateFilter() {
+            const states = [...new Set(allData.map(a => a.state))].sort();
+            const select = document.getElementById('stateFilter');
+            states.forEach(state => {
+                const option = document.createElement('option');
+                option.value = state;
+                option.textContent = state;
+                select.appendChild(option);
+            });
+        }
+
+        function applyFilters() {
+            const state = document.getElementById('stateFilter').value;
+            const type = document.getElementById('typeFilter').value;
+            const search = document.getElementById('searchInput').value.toLowerCase();
+
+            filteredData = allData.filter(area => {
+                const matchState = !state || area.state === state;
+                const matchType = !type || area.type === type;
+                const matchSearch = !search || area.name.toLowerCase().includes(search);
+                return matchState && matchType && matchSearch;
+            });
+
+            currentPage = 1;
+            displayTable();
+        }
+
+        function displayTable() {
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageData = filteredData.slice(start, end);
+
+            if (filteredData.length === 0) {
+                document.getElementById('content').innerHTML =
+                    '<div class="info-text">No results found. Try adjusting your filters.</div>';
+                return;
+            }
+
+            let html = `
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Area Name</th>
+                                <th>Type</th>
+                                <th>State</th>
+                                <th>Studio</th>
+                                <th>1-BR</th>
+                                <th>2-BR</th>
+                                <th>3-BR</th>
+                                <th>4-BR</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            pageData.forEach(area => {
+                html += `
+                    <tr>
+                        <td>${area.name}</td>
+                        <td><span class="type-badge ${area.type}">${area.type}</span></td>
+                        <td><span class="state-badge">${area.state}</span></td>
+                        <td class="rent-value">${area.studio_rent ? '$' + area.studio_rent.toLocaleString() : '-'}</td>
+                        <td class="rent-value">${area.one_bedroom_rent ? '$' + area.one_bedroom_rent.toLocaleString() : '-'}</td>
+                        <td class="rent-value">${area.two_bedroom_rent ? '$' + area.two_bedroom_rent.toLocaleString() : '-'}</td>
+                        <td class="rent-value">${area.three_bedroom_rent ? '$' + area.three_bedroom_rent.toLocaleString() : '-'}</td>
+                        <td class="rent-value">${area.four_bedroom_rent ? '$' + area.four_bedroom_rent.toLocaleString() : '-'}</td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            // Add pagination
+            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+            html += `
+                <div class="pagination">
+                    <button onclick="previousPage()" ${currentPage === 1 ? 'disabled' : ''}>← Previous</button>
+                    <span>Page ${currentPage} of ${totalPages} (${filteredData.length} results)</span>
+                    <button onclick="nextPage()" ${currentPage === totalPages ? 'disabled' : ''}>Next →</button>
+                </div>
+            `;
+
+            document.getElementById('content').innerHTML = html;
+        }
+
+        function previousPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                displayTable();
+                window.scrollTo(0, 0);
+            }
+        }
+
+        function nextPage() {
+            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                displayTable();
+                window.scrollTo(0, 0);
+            }
+        }
+
+        // Event listeners
+        document.getElementById('stateFilter').addEventListener('change', applyFilters);
+        document.getElementById('typeFilter').addEventListener('change', applyFilters);
+        document.getElementById('searchInput').addEventListener('input', applyFilters);
+
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            document.getElementById('stateFilter').value = '';
+            document.getElementById('typeFilter').value = '';
+            document.getElementById('searchInput').value = '';
+            applyFilters();
+        });
+
+        // Initial load
+        document.getElementById('content').innerHTML = '<div class="loading"><div class="spinner"></div>Loading data...</div>';
+        loadData();
+    </script>
+</body>
+</html>
