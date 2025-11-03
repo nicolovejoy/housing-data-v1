@@ -1,0 +1,33 @@
+{
+  "name": "housing-data-explorer",
+  "version": "1.0.0",
+  "description": "Interactive HUD Fair Market Rent data explorer",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:migrate": "npx ts-node backend/scripts/migrate.ts",
+    "db:seed": "npx ts-node backend/scripts/seed.ts"
+  },
+  "dependencies": {
+    "react": "^19.0.0-rc-66f6a91c-20241119",
+    "react-dom": "^19.0.0-rc-66f6a91c-20241119",
+    "next": "15.0.3",
+    "postgres": "^3.4.4",
+    "zustand": "^4.4.11"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "@types/node": "^20.10.6",
+    "@types/react": "^18.2.46",
+    "@types/react-dom": "^18.2.18",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32",
+    "tailwindcss": "^3.4.1",
+    "eslint": "^8.56.0",
+    "eslint-config-next": "15.0.3",
+    "ts-node": "^10.9.2"
+  }
+}
