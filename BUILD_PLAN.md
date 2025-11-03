@@ -412,19 +412,40 @@ If any phase fails at checkpoint:
 
 ---
 
-## Timeline Estimate
+## Updated Approach: Jupyter-First Exploration
 
-| Phase | Tasks | Est. Time |
-|-------|-------|-----------|
-| 1 | Restructure | 30 min |
-| 2 | Next.js setup | 1 hour |
-| 3 | Database schema | 1.5 hours |
-| 4 | API routes | 1 hour |
-| 5 | React components | 2 hours |
-| 6 | Styling | 1.5 hours |
-| 7 | Terraform | 1 hour |
-| 8 | Deployment | 1 hour |
-| **Total** | | **~9-10 hours** |
+**New Strategy:**
+After completing Phase 3 (database ready), pause the Next.js/Railway build and switch to **Jupyter notebooks** for:
+- Deep exploratory data analysis
+- Testing pivot table logic and aggregations
+- Understanding data relationships
+- Preparing for multi-dataset integration
+
+**Why this order:**
+1. Phases 1-3 give us a working database with FMR data
+2. Jupyter lets us explore and test queries interactively
+3. We can add other API data sources (Census, income data, etc.) via Jupyter
+4. Once we understand the data relationships, we build a better Next.js UI
+5. Database is already set up for production deployment later
+
+**Multi-Dataset Integration Plan:**
+- Phase 3: FMR data loaded in PostgreSQL
+- Jupyter Phase: Add Census data, income data, cost-of-living indices
+- Create normalized schema for multi-source data
+- Build aggregations that combine datasets
+- Then return to Next.js UI with fully integrated dataset
+
+## Timeline Estimate (Revised)
+
+| Phase | Tasks | Est. Time | Status |
+|-------|-------|-----------|--------|
+| 1 | Restructure | 30 min | ✅ Complete |
+| 2 | Next.js setup | 1 hour | ✅ Ready to install |
+| 3 | Database schema & data | 1.5 hours | 🔄 In progress |
+| **Jupyter Exploration** | Multi-dataset integration | 2-3 hours | ⏭️ Next |
+| 4-8 | React UI & Deployment | 5-6 hours | ⏳ Later |
+| **Total to Jupyter** | | **~3.5-4 hours** | |
+| **Total Full Project** | | **~9-10 hours** | |
 
 ---
 
@@ -457,6 +478,34 @@ git push origin main
 
 ---
 
+## Potential Data Sources for Integration
+
+During Jupyter exploration phase, consider adding:
+
+### Income & Affordability Data
+- **Census Bureau API** - Median household income by area
+- **HUD Income Limits API** - Income thresholds for housing programs
+- **BLS (Bureau of Labor Statistics)** - Cost of living indices
+
+### Housing Market Data
+- **Zillow API** - Current market rent data
+- **NOAA/Census** - Population and demographic data
+- **Google Trends** - Housing search interest by area
+
+### Geographic & Administrative Data
+- **US Census Geocoding API** - Lat/long for metro areas
+- **USGS** - Geographic boundaries and shapefiles
+
+### Implementation Pattern (Jupyter):
+1. Create Python functions for each API
+2. Test data normalization and schema fit
+3. Load into PostgreSQL alongside FMR data
+4. Create SQL views that combine datasets
+5. Document relationships in schema diagrams
+6. Then build React UI around combined data
+
+---
+
 ## Notes
 
 - Keep original `explore_fmr.py` script for data re-generation
@@ -464,3 +513,5 @@ git push origin main
 - Database is source of truth once loaded
 - Can re-run Python script to update data in DB anytime
 - Frontend/Backend can be updated independently
+- Jupyter notebooks will live in `/notebooks/` directory
+- Each API integration gets its own notebook for testing
