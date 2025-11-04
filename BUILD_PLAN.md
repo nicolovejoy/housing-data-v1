@@ -435,16 +435,18 @@ After completing Phase 3 (database ready), pause the Next.js/Railway build and s
 - Build aggregations that combine datasets
 - Then return to Next.js UI with fully integrated dataset
 
-## Timeline Estimate (Revised)
+## Timeline Estimate (Updated)
 
 | Phase | Tasks | Est. Time | Status |
 |-------|-------|-----------|--------|
 | 1 | Restructure | 30 min | ✅ Complete |
-| 2 | Next.js setup | 1 hour | ✅ Ready to install |
-| 3 | Database schema & data | 1.5 hours | 🔄 In progress |
-| **Jupyter Exploration** | Multi-dataset integration | 2-3 hours | ⏭️ Next |
-| 4-8 | React UI & Deployment | 5-6 hours | ⏳ Later |
-| **Total to Jupyter** | | **~3.5-4 hours** | |
+| 2 | Next.js setup | 1 hour | ✅ Complete |
+| 3a | Database schema | 30 min | ✅ Complete |
+| 3b | Load FMR data | 15 min | 🔄 In progress |
+| 3c | Verify data | 5 min | ⏭️ Next |
+| **Jupyter Exploration** | Multi-dataset integration | 2-3 hours | ⏭️ After data loaded |
+| 4-8 | React UI & Deployment | 5-6 hours | ⏳ Later (after Jupyter) |
+| **Total to Jupyter Ready** | | **~2.5 hours** | 🔄 Now |
 | **Total Full Project** | | **~9-10 hours** | |
 
 ---

@@ -30,6 +30,7 @@ This document walks you through getting FMR data into Railway cloud and then usi
 5. **Save this somewhere** - you'll need it for the next steps
 
 **Or get individual values:**
+
 - Go to "Variables" tab
 - Note: PGHOST, PGPORT, PGUSER, PGPASSWORD, PGDATABASE
 
@@ -37,7 +38,7 @@ This document walks you through getting FMR data into Railway cloud and then usi
 
 ```bash
 # Test that you can connect (replace with your actual string)
-export DATABASE_URL="postgresql://user:password@host:port/database"
+export DATABASE_URL="[postgresql://user:password@host:port/database](postgresql://postgres:mcazwRDPTQRoPjTIdcEWPvLHsbjMEEDK@maglev.proxy.rlwy.net:27498/railway)"
 
 # Using psql (if installed)
 psql $DATABASE_URL -c "SELECT 1"
@@ -106,6 +107,7 @@ python3 backend/scripts/load_fmr_data.py
 ```
 
 This script will:
+
 - Read `fmr_data.json`
 - Connect to Railway PostgreSQL
 - Insert all 5,449 areas
@@ -113,6 +115,7 @@ This script will:
 - Show success/failure
 
 **Expected output:**
+
 ```
 ====================================================
 FMR Data Loader
@@ -280,15 +283,15 @@ python --version  # Should be 3.8+
 
 ## Quick Reference
 
-| Step | Command |
-|------|---------|
-| Set DB URL | `export DATABASE_URL="..."`|
-| Test connection | `psql $DATABASE_URL -c "SELECT 1"` |
-| Create schema | `psql $DATABASE_URL < backend/db/init.sql` |
-| Load data | `python3 backend/scripts/load_fmr_data.py` |
-| Verify data | `psql $DATABASE_URL -c "SELECT COUNT(*) FROM areas;"` |
-| Start Jupyter | `jupyter notebook` |
-| Open notebook | http://localhost:8888 |
+| Step            | Command                                               |
+| --------------- | ----------------------------------------------------- |
+| Set DB URL      | `export DATABASE_URL="..."`                           |
+| Test connection | `psql $DATABASE_URL -c "SELECT 1"`                    |
+| Create schema   | `psql $DATABASE_URL < backend/db/init.sql`            |
+| Load data       | `python3 backend/scripts/load_fmr_data.py`            |
+| Verify data     | `psql $DATABASE_URL -c "SELECT COUNT(*) FROM areas;"` |
+| Start Jupyter   | `jupyter notebook`                                    |
+| Open notebook   | http://localhost:8888                                 |
 
 ---
 
@@ -322,6 +325,7 @@ Once you're comfortable with the data:
 ## Contact Points
 
 If stuck at any step:
+
 1. Check "Troubleshooting" section above
 2. Review `RAILWAY_SETUP.md` for detailed Railway instructions
 3. Review `JUPYTER_SETUP.md` for Jupyter query examples
